@@ -26,5 +26,10 @@ namespace WindowsFormsApp1
         {
 
         }
+
+        private void panel14_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
     }
 }
