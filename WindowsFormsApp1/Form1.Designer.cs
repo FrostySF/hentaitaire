@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -49,7 +50,6 @@
             this.panel14 = new System.Windows.Forms.Panel();
             this.panel15 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
-            this.label6 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
@@ -69,6 +69,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(991, 34);
             this.panel1.TabIndex = 0;
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(575, 8);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(28, 13);
+            this.label6.TabIndex = 15;
+            this.label6.Text = "pred";
             // 
             // label5
             // 
@@ -249,15 +258,6 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(991, 680);
             this.panel2.TabIndex = 1;
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(575, 8);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(28, 13);
-            this.label6.TabIndex = 15;
-            this.label6.Text = "pred";
             // 
             // Form1
             // 

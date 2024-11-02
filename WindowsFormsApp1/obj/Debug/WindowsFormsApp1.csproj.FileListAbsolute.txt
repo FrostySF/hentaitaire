@@ -8,3 +8,13 @@ C:\Users\svatoslav\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\Wind
 C:\Users\svatoslav\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
 C:\Users\svatoslav\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
 C:\Users\svatoslav\source\repos\WindowsFormsApp1\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
+F:\source\hentaitaire\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
+F:\source\hentaitaire\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
+F:\source\hentaitaire\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.AssemblyReference.cache
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
+F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb

@@ -23,7 +23,7 @@ namespace WindowsFormsApp1
         public List<string> pan6 = new List<string>(); // тут 6 карты по началу
         public List<string> pan7 = new List<string>(); // последняя,  тут 7 карты по началу
         public List<string> portfel = new List<string>(); // портфель от раздоющий колоды
-        
+
         public List<Button> panelrazB = new List<Button>();
         public List<Button> portfelB = new List<Button>();
         public List<Button> pan1B = new List<Button>();
@@ -33,6 +33,8 @@ namespace WindowsFormsApp1
         public List<Button> pan5B = new List<Button>();
         public List<Button> pan6B = new List<Button>();
         public List<Button> pan7B = new List<Button>();
+
+        public Button draggedCard = null;
 
         public string selectCard = "";
 
@@ -57,9 +59,16 @@ namespace WindowsFormsApp1
                     Size = new Size(87, 110),
                     Location = new Point(29, 83),
                     BackColor = Color.Black,
+                    AllowDrop = true,
                     Text = panelraz[i]
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "panelrazB";
+
                 but.BringToFront();
                 panelrazB.Add(but);
                 panel2.Controls.Add(but);
@@ -74,9 +83,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(29, y - my),
+                    AllowDrop = true,
                     Text = pan1[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan1B";
                 if (pan1[i][pan1[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -98,9 +113,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(171, y - my),
+                    AllowDrop = true,
                     Text = pan2[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan2B";
                 if (pan2[i][pan2[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -121,9 +142,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(314, y - my),
+                    AllowDrop = true,
                     Text = pan3[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan3B";
                 if (pan3[i][pan3[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -144,9 +171,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(475, y - my),
+                    AllowDrop = true,
                     Text = pan4[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan4B";
                 if (pan4[i][pan4[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -167,9 +200,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(625, y - my),
+                    AllowDrop = true,
                     Text = pan5[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan5B";
                 if (pan5[i][pan5[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -190,9 +229,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(756, y - my),
+                    AllowDrop = true,
                     Text = pan6[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan6B";
                 if (pan6[i][pan6[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -213,9 +258,15 @@ namespace WindowsFormsApp1
                 {
                     Size = new Size(87, 110),
                     Location = new Point(892, y - my),
+                    AllowDrop = true,
                     Text = pan7[i],
                 };
                 but.Click += new EventHandler(card_click);
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "pan7B";
                 if (pan7[i][pan7[i].Length - 1] == 'o')
                 {
                     but.BackColor = Color.White;
@@ -239,15 +290,160 @@ namespace WindowsFormsApp1
             panel15.Visible = false;
         }
 
+        private void But_MouseUp(object sender, MouseEventArgs e)
+        {
+            isDragging = false;
+        }
+
+        private bool CanPlaceCard(string sourceCardText, string targetCardText)
+        {
+            if (targetCardText == "") // Пустая колода
+                return true;
+
+            if (isopen(sourceCardText) && isopen(targetCardText)) // Обе карты открыты 
+            {
+                // Проверяем масть и ранг (в "Косынке" - противоположная масть, на один ранг меньше)
+                return (sourceCardText[0] != targetCardText[0] &&
+                    (int)sourceCardText[1] == (int)targetCardText[1] - 1);
+            }
+            return false;
+        }
+
+        private bool isDragging = false;
+        private Point mouseOffset;
+
+        private void But_MouseMove(object sender, MouseEventArgs e)
+        {
+         
+        }
+
+        private void But_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(Button)))
+            {
+                e.Effect = DragDropEffects.Move;
+                Button aa = sender as Button;
+                aa.MouseMove += But_MouseMove;
+            }
+            else
+            {
+                e.Effect = DragDropEffects.None;
+            }
+        }
+
+        private void But_DragDrop(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(typeof(Button)))
+            {
+                Button targetCard = sender as Button;
+                Button sourceCard = e.Data.GetData(typeof(Button)) as Button;
+                
+                if (CanPlaceCard(sourceCard.Text,targetCard.Text))
+                {
+                    if (targetCard != null && sourceCard != null && targetCard != sourceCard)
+                    {
+                        var targetLocation = targetCard.Location;
+                        sourceCard.Location = new Point(targetLocation.X, targetLocation.Y + 15);
+                        sourceCard.BringToFront();
+                        CardMoveFromTo(sourceCard, targetCard);
+                        MessageBox.Show($"Перемещена карта с {sourceCard.Text} на {targetCard.Text}");
+                    }
+                }
+            }
+        }
+
+        private void CardMoveFromTo(Button cardSource, Button cardTarget)
+        {
+            string srcTextList = cardSource.Tag as string;
+            string trgtTextList = cardTarget.Tag as string;
+            MessageBox.Show(srcTextList);
+            List<Button> srcList = GetButtonListByName(srcTextList);  
+            List<Button> trgtList = GetButtonListByName(trgtTextList);
+            foreach (var src in srcList)
+            {
+                MessageBox.Show(src.Text );
+            }
+            OpenLastCard(srcList);
+            srcList.Remove(cardSource);
+            trgtList.Add(cardTarget);
+        }
+
+        private List<Button> GetButtonListByName(string listName)
+        {
+            switch (listName)
+            {
+                case "panelrazB": return panelrazB;
+                case "pan1B": return pan1B;
+                case "pan2B": return pan2B;
+                case "pan3B": return pan3B;
+                case "pan4B": return pan4B;
+                case "pan5B": return pan5B;
+                case "pan6B": return pan6B;
+                case "pan7B": return pan7B;
+                case "portfelB": return portfelB;
+                default: return null;
+            }
+        }
+
+        private List<string> GetListByName(string listName)
+        {
+            switch (listName)
+            {
+                case "panelraz": return panelraz;
+                case "pan1": return pan1;
+                case "pan2": return pan2;
+                case "pan3": return pan3;
+                case "pan4": return pan4;
+                case "pan5": return pan5;
+                case "pan6": return pan6;
+                case "pan7": return pan7;
+                case "portfel": return portfel;
+                default: return null;
+            }
+        }
+
+        private void OpenLastCard(List<Button> cards)
+        {
+            if (cards!= null)
+            {
+                Button button = cards[1];
+                if (!isopen(button.Text))
+                {
+                    button.BackColor = Color.White;
+                    button.Text = button.Text.Replace('c', 'o');
+                }
+            }
+        }
+
+
+        private void But_MouseDown(object sender, MouseEventArgs e)
+        {
+            Button card = sender as Button;
+            if (card != null)
+            {
+                isDragging = true;
+                // Получаем текущую позицию мыши
+                mouseOffset = e.Location;
+                draggedCard = card;
+                card.GiveFeedback += Card_GiveFeedback;
+                DoDragDrop(card, DragDropEffects.Move);
+            }
+        }
+
+        private void Card_GiveFeedback(object sender, GiveFeedbackEventArgs e)
+        {
+            e.UseDefaultCursors = false;
+        }
+
         public string pred = "";
-        private void card_click (object sender, EventArgs e)
+        private void card_click(object sender, EventArgs e)
         {
             selectCard = (sender as Button).Text.ToString();
             label3.Text = selectCard;
             label5.Text = pred;
 
             if (panelraz.Contains(selectCard))
-            { 
+            {
                 panelraz.Remove(selectCard);
                 StringBuilder sb = new StringBuilder(selectCard);
                 sb[sb.Length - 1] = 'o';
@@ -263,6 +459,7 @@ namespace WindowsFormsApp1
                 };
                 portfelB.Add(but);
                 but.Click += new EventHandler(card_click);
+
                 but.BringToFront();
                 panel2.Controls.Add(but);
                 panel2.Controls.SetChildIndex(but, 0);
