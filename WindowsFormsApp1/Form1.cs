@@ -535,7 +535,7 @@ namespace WindowsFormsApp1
             if (trgtTextList == "portfelB")
                 portfel.Remove(cardTarget.Text);
             trgtList.Remove(cardTarget);
-            OpenLastCard(trgtList);
+            OpenLastCard(trgtList); 
             Button but = new Button
             {
                 Size = new Size(87, 110),
@@ -545,8 +545,8 @@ namespace WindowsFormsApp1
             };
             panel2.Controls.Remove(cardTarget);
             but.Location = new Point();
-            panel.Controls.Add(but);
             but.BringToFront();
+            panel.Controls.Add(but); 
         }
 
 
