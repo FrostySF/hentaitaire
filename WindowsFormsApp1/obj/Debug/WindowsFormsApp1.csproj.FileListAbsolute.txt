@@ -18,3 +18,13 @@ F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.Generat
 F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
 F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
 F:\source\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe.config
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.exe
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\bin\Debug\WindowsFormsApp1.pdb
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.AssemblyReference.cache
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Form1.resources
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.Properties.Resources.resources
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.GenerateResource.cache
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.csproj.CoreCompileInputs.cache
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.exe
+C:\Users\svatoslav\Downloads\hentaitaire\WindowsFormsApp1\obj\Debug\WindowsFormsApp1.pdb

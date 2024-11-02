@@ -41,7 +41,7 @@ namespace WindowsFormsApp1
         public List<string> cardl = new List<string>() { "c2", "c3", "c4", "c5", "c6", "c7", "c8", "c9", "c10", "cj", "cq", "ck", "ca",
          "p2", "p3", "p4", "p5", "p6", "p7", "p8", "p9", "p10", "pj", "pq", "pk", "pa",
          "b2", "b3", "b4", "b5", "b6", "b7", "b8", "b9", "b10", "bj", "bq", "bk", "ba",
-         "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9", "k10", "kj", "kq", "kk", "ka"}; // c - чери, p - пики, b - буби, k - крести
+         "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9", "k10", "kj", "kq", "kk", "ka"}; // c - чери, p - пики, b - буби, k - крести; k и p - черные 
 
         public Form1()
         {
@@ -290,36 +290,154 @@ namespace WindowsFormsApp1
             panel15.Visible = false;
         }
 
-        private void But_MouseUp(object sender, MouseEventArgs e)
+        private void But_MouseUp(object sender, MouseEventArgs e) => isDragging = false;
+        
+        private bool CanPlaceCards(List<string> movingCards, string targetCardText)
         {
-            isDragging = false;
+            if (movingCards == null || movingCards.Count == 0)
+                return false; // Нет карт для перемещения
+            for (int i = 0; i < movingCards.Count - 1; i++)
+            {
+                string currentCard = movingCards[i];
+                string nextCard = movingCards[i + 1];
+
+                if (!IsValidSequence(currentCard, nextCard))
+                    return false; // Если последовательность нарушена, перемещение невозможно
+            }
+
+            string topMovingCard = movingCards[0];
+            return CanPlaceCard(topMovingCard, targetCardText);
         }
 
+        private bool IsValidSequence(string upperCardText, string lowerCardText)
+        {
+            // Разбираем карты
+            string upperSuit, upperRank;
+            ParseCard(upperCardText, out upperSuit, out upperRank);
+            int upperValue = RankToValue(upperRank);
+
+            string lowerSuit, lowerRank;
+            ParseCard(lowerCardText, out lowerSuit, out lowerRank);
+            int lowerValue = RankToValue(lowerRank);
+
+            // Проверка на корректность рангов
+            if (upperValue == -1 || lowerValue == -1)
+                return false;
+
+            bool upperIsRed = IsSuitRed(upperSuit);
+            bool lowerIsRed = IsSuitRed(lowerSuit);
+            bool colorsAreOpposite = upperIsRed != lowerIsRed;
+            bool rankIsOneGreater = upperValue == lowerValue + 1;
+            return colorsAreOpposite && rankIsOneGreater;
+        }
+
+        private void ParseCard(string cardText, out string suit, out string rank)
+        {
+            if (string.IsNullOrEmpty(cardText))
+            {
+                suit = "";
+                rank = "";
+                return;
+            }
+
+            suit = cardText[0].ToString();
+
+            if (char.IsDigit(cardText[1]))
+            {
+                int rankd = 0;
+                int.TryParse(string.Join("", cardText.Where(c => char.IsDigit(c))), out rankd);
+                rank = rankd.ToString();
+            }
+            else
+            {
+                rank = cardText[1].ToString();
+            }
+        }
+
+        private int RankToValue(string rank)
+        {
+            switch (rank.ToLower())
+            {
+                case "a":
+                    return 1;  // В "Косынке" туз обычно считается как 1
+                case "2":
+                    return 2;
+                case "3":
+                    return 3;
+                case "4":
+                    return 4;
+                case "5":
+                    return 5;
+                case "6":
+                    return 6;
+                case "7":
+                    return 7;
+                case "8":
+                    return 8;
+                case "9":
+                    return 9;
+                case "10":
+                    return 10;
+                case "j":
+                    return 11;
+                case "q":
+                    return 12;
+                case "k":
+                    return 13;
+                default:
+                    return -1;  // инвалид
+            }
+        }
+        private bool IsSuitRed(string suit)
+        {
+            switch (suit.ToLower())
+            {
+                case "c": // Черви
+                case "b": // Буби
+                    return true;  // КРасные идут
+
+                case "p": // Пики
+
+                case "k": // Крест
+                    return false; // негр
+                default:
+                    return false; // негр
+            }
+        }
         private bool CanPlaceCard(string sourceCardText, string targetCardText)
         {
-            if (targetCardText == "") // Пустая колода
-                return true;
+            string sourceSuit, sourceRank;
+            ParseCard(sourceCardText, out sourceSuit, out sourceRank);
+            int sourceValue = RankToValue(sourceRank);
 
-            if (isopen(sourceCardText) && isopen(targetCardText)) // Обе карты открыты 
-            {
-                // Проверяем масть и ранг (в "Косынке" - противоположная масть, на один ранг меньше)
-                return (sourceCardText[0] != targetCardText[0] &&
-                    (int)sourceCardText[1] == (int)targetCardText[1] - 1);
-            }
-            return false;
+            if (string.IsNullOrEmpty(targetCardText))
+                return sourceValue == 13;
+
+            string targetSuit, targetRank;
+            ParseCard(targetCardText, out targetSuit, out targetRank);
+            int targetValue = RankToValue(targetRank);
+
+            if (sourceValue == -1 || targetValue == -1)
+                return false;
+            bool sourceIsRed = IsSuitRed(sourceSuit);
+            bool targetIsRed = IsSuitRed(targetSuit);
+            bool colorsAreOpposite = sourceIsRed != targetIsRed;
+            bool rankIsOneLess = sourceValue == targetValue - 1;
+            return colorsAreOpposite && rankIsOneLess;
         }
+
 
         private bool isDragging = false;
         private Point mouseOffset;
 
         private void But_MouseMove(object sender, MouseEventArgs e)
         {
-         
+
         }
 
         private void But_DragEnter(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(Button)))
+            if (e.Data != null && e.Data.GetDataPresent("CardTexts"))
             {
                 e.Effect = DragDropEffects.Move;
                 Button aa = sender as Button;
@@ -333,39 +451,133 @@ namespace WindowsFormsApp1
 
         private void But_DragDrop(object sender, DragEventArgs e)
         {
-            if (e.Data.GetDataPresent(typeof(Button)))
+            if (e.Data == null)
+            {
+                MessageBox.Show("Ошибка: e.Data равен null.");
+                return;
+            }
+            if (e.Data.GetDataPresent("CardTexts"))
             {
                 Button targetCard = sender as Button;
-                Button sourceCard = e.Data.GetData(typeof(Button)) as Button;
-                
-                if (CanPlaceCard(sourceCard.Text,targetCard.Text))
+                List<string> movingCardTexts = e.Data.GetData("CardTexts") as List<string>;
+                if (CanPlaceCards(movingCardTexts, targetCard.Text))
                 {
-                    if (targetCard != null && sourceCard != null && targetCard != sourceCard)
+                    List<Button> cardsToMove = GetButtonsByTexts(movingCardTexts);
+                    CardMoveFromTo(cardsToMove, targetCard);
+                    var targetLocation = targetCard.Location;
+                    for (int i = 0; i < cardsToMove.Count; i++)
                     {
-                        var targetLocation = targetCard.Location;
-                        sourceCard.Location = new Point(targetLocation.X, targetLocation.Y + 15);
-                        sourceCard.BringToFront();
-                        CardMoveFromTo(sourceCard, targetCard);
-                        MessageBox.Show($"Перемещена карта с {sourceCard.Text} на {targetCard.Text}");
+                        Button card = cardsToMove[i];
+                        card.Location = new Point(targetLocation.X, targetLocation.Y + 15 * (i + 1));
+                        card.BringToFront();
                     }
+                    //MessageBox.Show($"Перемещена последовательность карт на {targetCard.Text}");
                 }
             }
         }
+
+        private List<Button> GetButtonsByTexts(List<string> cardTexts)
+        {
+            List<Button> buttons = new List<Button>();
+
+            foreach (string text in cardTexts)
+            {
+                Button cardButton = FindCardButtonByText(text);
+                if (cardButton != null)
+                    buttons.Add(cardButton);
+                else
+                    MessageBox.Show($"Карта с текстом '{text}' не найдена.");
+            }
+            return buttons;
+        }
+
+        private Button FindCardButtonByText(string text)
+        {
+            foreach (Control control in panel2.Controls)
+                if (control is Button btn && btn.Text == text)
+                    return btn;
+            return null;
+        }
+
+        private void CardMoveFromTo(List<Button> cardsToMove, Button cardTarget)
+        {
+            if (cardsToMove == null || cardsToMove.Count == 0)
+                return;
+
+            Button firstCard = cardsToMove[0];
+            string srcTextList = firstCard.Tag as string;
+            string trgtTextList = cardTarget.Tag as string;
+
+            List<Button> srcList = GetButtonListByName(srcTextList);
+            List<Button> trgtList = GetButtonListByName(trgtTextList);
+
+            foreach (Button card in cardsToMove)
+            {
+                if (srcTextList == "portfelB")
+                {
+                    portfel.Remove(card.Text);
+                }
+                srcList.Remove(card);
+            }
+            OpenLastCard(srcList);
+            trgtList.AddRange(cardsToMove);
+            foreach (Button card in cardsToMove)
+            {
+                card.Tag = trgtTextList;
+            }
+        }
+
+        private void CardMoveToF(Button cardTarget, Panel panel)
+        {
+            string trgtTextList = cardTarget.Tag as string;
+            List<Button> trgtList = GetButtonListByName(trgtTextList);
+
+            if (trgtTextList == "portfelB")
+                portfel.Remove(cardTarget.Text);
+            trgtList.Remove(cardTarget);
+            OpenLastCard(trgtList);
+            Button but = new Button
+            {
+                Size = new Size(87, 110),
+                Location = new Point(),
+                BackColor = Color.White,
+                Text = cardTarget.Text.ToString()
+            };
+            panel2.Controls.Remove(cardTarget);
+            but.Location = new Point();
+            panel.Controls.Add(but);
+            but.BringToFront();
+        }
+
 
         private void CardMoveFromTo(Button cardSource, Button cardTarget)
         {
             string srcTextList = cardSource.Tag as string;
             string trgtTextList = cardTarget.Tag as string;
-            MessageBox.Show(srcTextList);
-            List<Button> srcList = GetButtonListByName(srcTextList);  
+            List<Button> srcList = GetButtonListByName(srcTextList);
             List<Button> trgtList = GetButtonListByName(trgtTextList);
-            foreach (var src in srcList)
-            {
-                MessageBox.Show(src.Text );
-            }
+            if (srcTextList == "portfelB")
+                portfel.Remove(cardSource.Text);
             OpenLastCard(srcList);
             srcList.Remove(cardSource);
             trgtList.Add(cardTarget);
+        }
+
+        private List<Button> GetCardsToMove(Button sourceCard)
+        {
+            string srcTextList = sourceCard.Tag as string;
+            List<Button> srcList = GetButtonListByName(srcTextList);
+            int startIndex = srcList.IndexOf(sourceCard);
+            List<Button> cardsToMove = new List<Button>();
+            for (int i = startIndex; i < srcList.Count; i++)
+            {
+                Button card = srcList[i];
+                if (!card.Text.EndsWith("c"))
+                    cardsToMove.Add(card);
+                else
+                    break;
+            }
+            return cardsToMove;
         }
 
         private List<Button> GetButtonListByName(string listName)
@@ -404,9 +616,9 @@ namespace WindowsFormsApp1
 
         private void OpenLastCard(List<Button> cards)
         {
-            if (cards!= null)
+            if (cards.Count >= 1)
             {
-                Button button = cards[1];
+                Button button = cards[0];
                 if (!isopen(button.Text))
                 {
                     button.BackColor = Color.White;
@@ -419,14 +631,68 @@ namespace WindowsFormsApp1
         private void But_MouseDown(object sender, MouseEventArgs e)
         {
             Button card = sender as Button;
-            if (card != null)
+            string selectCard = card.Text;
+
+            string rank = "";
+            string suit = "";
+
+            label1.Text = selectCard;
+            ParseCard(selectCard, out suit, out rank);
+            if (panelraz.Contains(selectCard))
             {
-                isDragging = true;
-                // Получаем текущую позицию мыши
-                mouseOffset = e.Location;
-                draggedCard = card;
-                card.GiveFeedback += Card_GiveFeedback;
-                DoDragDrop(card, DragDropEffects.Move);
+                panelraz.Remove(selectCard);
+                StringBuilder sb = new StringBuilder(selectCard);
+                sb[sb.Length - 1] = 'o';
+                portfel.Add(sb.ToString());
+
+                panel4.Visible = false;
+                Button but = new Button
+                {
+                    Size = new Size(87, 110),
+                    Location = new Point(152, 83),
+                    BackColor = Color.White,
+                    Text = sb.ToString()
+                };
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "portfelB";
+                portfelB.Add(but);
+                but.Click += new EventHandler(card_click);
+
+                but.BringToFront();
+                panel2.Controls.Add(but);
+                panel2.Controls.SetChildIndex(but, 0);
+                visableEl(selectCard, panelrazB);
+                if (panelraz.Count == 0)
+                {
+                    panel3.Visible = true;
+                }
+            }
+
+            if (suit == "c" && panel5.Controls.Count == (RankToValue(rank) - 1) && !card.Text.EndsWith("c"))
+                CardMoveToF(card, panel5);
+            else if (suit == "k" && panel6.Controls.Count == (RankToValue(rank) - 1) && !card.Text.EndsWith("c"))
+                CardMoveToF(card, panel6);
+            else if (suit == "b" && panel7.Controls.Count == (RankToValue(rank) - 1) && !card.Text.EndsWith("c"))
+                CardMoveToF(card, panel7);
+            else if (suit == "p" && panel8.Controls.Count == (RankToValue(rank) - 1) && !card.Text.EndsWith("c"))
+                CardMoveToF(card, panel8);
+            else if (card != null)
+            {
+                List<string> cardsToMoveTexts = GetCardsToMove(card).Select(c => c.Text).ToList();
+                if (cardsToMoveTexts.Count > 0)
+                {
+                    isDragging = true;
+                    // Получаем текущую позицию мыши
+                    mouseOffset = e.Location;
+                    draggedCard = card;
+                    DataObject data = new DataObject();
+                    data.SetData("CardTexts", cardsToMoveTexts);
+                    DoDragDrop(data, DragDropEffects.Move);
+                    card.GiveFeedback += Card_GiveFeedback;
+                }
             }
         }
 
@@ -438,9 +704,16 @@ namespace WindowsFormsApp1
         public string pred = "";
         private void card_click(object sender, EventArgs e)
         {
+            string rank = "";
+            string suit = "";
+
             selectCard = (sender as Button).Text.ToString();
             label3.Text = selectCard;
             label5.Text = pred;
+
+            Button card = sender as Button;
+
+            ParseCard(selectCard, out suit, out rank);
 
             if (panelraz.Contains(selectCard))
             {
@@ -457,6 +730,11 @@ namespace WindowsFormsApp1
                     BackColor = Color.White,
                     Text = sb.ToString()
                 };
+                but.MouseDown += But_MouseDown;
+                but.DragEnter += But_DragEnter;
+                but.DragDrop += But_DragDrop;
+                but.MouseUp += But_MouseUp;
+                but.Tag = "portfelB";
                 portfelB.Add(but);
                 but.Click += new EventHandler(card_click);
 
@@ -464,6 +742,7 @@ namespace WindowsFormsApp1
                 panel2.Controls.Add(but);
                 panel2.Controls.SetChildIndex(but, 0);
                 visableEl(selectCard, panelrazB);
+
                 if (panelraz.Count == 0)
                 {
                     panel3.Visible = true;
@@ -473,7 +752,7 @@ namespace WindowsFormsApp1
             {
                 if (colopencar(pan1) < 2)
                 {
-                    MessageBox.Show("s");
+                    //MessageBox.Show("s");
                 }
             }
 
@@ -639,27 +918,27 @@ namespace WindowsFormsApp1
 
         private void panel4_Click(object sender, EventArgs e)
         {
-            if (panelraz.Contains(selectCard) == true)
-            {
-                panelraz.Remove(selectCard);
-                StringBuilder sb = new StringBuilder(selectCard);
-                sb[sb.Length - 1] = 'o';
-                portfel.Add(sb.ToString());
+            //if (panelraz.Contains(selectCard) == true)
+            //{
+            //    panelraz.Remove(selectCard);
+            //    StringBuilder sb = new StringBuilder(selectCard);
+            //    sb[sb.Length - 1] = 'o';
+            //    portfel.Add(sb.ToString());
 
-                panel4.Visible = false;
-                Button but = new Button
-                {
-                    Size = new Size(87, 110),
-                    Location = new Point(152, 83),
-                    BackColor = Color.White,
-                    Text = sb.ToString()
-                };
-                portfelB.Add(but);
-                but.Click += new EventHandler(card_click);
-                but.BringToFront();
-                panel2.Controls.Add(but);
-                visableEl(selectCard, panelrazB);
-            }
+            //    panel4.Visible = false;
+            //    Button but = new Button
+            //    {
+            //        Size = new Size(87, 110),
+            //        Location = new Point(152, 83),
+            //        BackColor = Color.White,
+            //        Text = sb.ToString()
+            //    };
+            //    portfelB.Add(but);
+            //    but.Click += new EventHandler(card_click);
+            //    but.BringToFront();
+            //    panel2.Controls.Add(but);
+            //    visableEl(selectCard, panelrazB);
+            //}
         }
 
         private void visableEl(string text, List<Button> a)
